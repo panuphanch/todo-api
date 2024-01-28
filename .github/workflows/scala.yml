@@ -1,9 +1,7 @@
-name: Scala CI
+name: Todo CI
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
     branches: [ "master" ]
 
 permissions:
