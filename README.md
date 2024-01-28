@@ -1,3 +1,5 @@
+[![Scala CI](https://github.com/panuphanch/todo-api/actions/workflows/scala.yml/badge.svg)](https://github.com/panuphanch/todo-api/actions/workflows/scala.yml)
+
 # Todo-API with Scala, Finatra-HTTP, and Guice
 
 ## Overview
