@@ -26,6 +26,20 @@ class TaskServerSpec extends FeatureTest {
 		)
 	}
 
+	test("Move unavailable item to doing should return status notFound and json body is 'Item was not found'") {
+		server.httpPost(
+			path = "/todo/next",
+			postBody = """
+				|{
+				|	"id": 1,
+				|	"title": "buy apple"
+				|}
+			""".stripMargin,
+			andExpect = Status.NotFound,
+			withJsonBody = "Item was not found"
+		)
+	}
+
 	test("Move item to doing should return status created and json body is 'Item was moved to doing'") {
 		server.httpPost(
 			path = "/todo/next",
@@ -50,6 +64,48 @@ class TaskServerSpec extends FeatureTest {
 	test("After move item to doing, doing list should contain 1 item") {
 		server.httpGet(
 			path = "/doing",
+			withJsonBody = """[{"id":0, "title":"buy banana"}]"""
+		)
+	}
+
+	test("Move unavailable item to done should return status notFound and json body is 'Item was not found'") {
+		server.httpPost(
+			path = "/doing/next",
+			postBody = """
+				|{
+				|	"id": 1,
+				|	"title": "buy apple"
+				|}
+			""".stripMargin,
+			andExpect = Status.NotFound,
+			withJsonBody = "Item was not found"
+		)
+	}
+
+	test("Move item to done should return status created and json body is 'Item was moved to done'") {
+		server.httpPost(
+			path = "/doing/next",
+			postBody = """
+				|{
+				|	"id": 0,
+				|	"title": "buy banana"
+				|}
+			""".stripMargin,
+			andExpect = Status.Created,
+			withJsonBody = "Item was moved to done"
+		)
+	}
+
+	test("After move item to done doing list should be empty") {
+		server.httpGet(
+			path = "/doing",
+			withJsonBody = "[]"
+		)
+	}
+
+	test("After move item to done, done list should contain 1 item") {
+		server.httpGet(
+			path = "/done",
 			withJsonBody = """[{"id":0, "title":"buy banana"}]"""
 		)
 	}
