@@ -110,4 +110,45 @@ class TaskServerSpec extends FeatureTest {
 		)
 	}
 
+	test("Move unavailable item back to doing should return status notFound and json body is 'Item was not found'") {
+		server.httpPost(
+			path = "/done/revert",
+			postBody = """
+				|{
+				|	"id": 1,
+				|	"title": "buy apple"
+				|}
+			""".stripMargin,
+			andExpect = Status.NotFound,
+			withJsonBody = "Item was not found"
+		)
+	}
+
+	test("Moving item back from done to doing should return status created and JSON body 'Item was moved back to doing'") {
+		server.httpPost(
+			path = "/done/revert",
+			postBody = """
+				|{
+				|	"id": 0,
+				|	"title": "buy banana"
+				|}
+			""".stripMargin,
+			andExpect = Status.Created,
+			withJsonBody = "Item was moved back to doing"
+		)
+	}
+
+	test("After moving item back to doing, the done list should be empty") {
+		server.httpGet(
+			path = "/done",
+			withJsonBody = "[]"
+		)
+	}
+
+	test("After moving item back to doing, the doing list should contain 1 item") {
+		server.httpGet(
+			path = "/doing",
+			withJsonBody = """[{"id":0, "title":"buy banana"}]"""
+		)
+	}
 }
