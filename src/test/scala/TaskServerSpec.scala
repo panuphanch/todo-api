@@ -151,4 +151,46 @@ class TaskServerSpec extends FeatureTest {
 			withJsonBody = """[{"id":0, "title":"buy banana"}]"""
 		)
 	}
+
+	test("Move unavailable item back to todo should return status notFound and json body is 'Item was not found'") {
+		server.httpPost(
+			path = "/doing/revert",
+			postBody = """
+				|{
+				|	"id": 1,
+				|	"title": "buy apple"
+				|}
+			""".stripMargin,
+			andExpect = Status.NotFound,
+			withJsonBody = "Item was not found"
+		)
+	}
+
+	test("Moving item back from doing to todo should return status created and JSON body 'Item was moved back to todo'") {
+		server.httpPost(
+			path = "/doing/revert",
+			postBody = """
+				|{
+				|	"id": 0,
+				|	"title": "buy banana"
+				|}
+			""".stripMargin,
+			andExpect = Status.Created,
+			withJsonBody = "Item was moved back to todo"
+		)
+	}
+
+	test("After moving item back to todo, the doing list should be empty") {
+		server.httpGet(
+			path = "/doing",
+			withJsonBody = "[]"
+		)
+	}
+
+	test("After moving item back to todo, the todo list should contain 1 item") {
+		server.httpGet(
+			path = "/todo",
+			withJsonBody = """[{"id":0, "title":"buy banana"}]"""
+		)
+	}
 }

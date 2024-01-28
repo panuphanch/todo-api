@@ -37,6 +37,14 @@ class TaskResource @Inject() (repo: SortedMapTaskRepo) extends Controller {
 		}
 	}
 
+	post("/doing/revert") { doing: Doing =>
+		val result = repo.revertToTodo(doing)
+		result match {
+			case Some(value) => response.created(s"Item was moved back to todo")
+			case None => response.notFound(s"Item was not found")
+		}
+	}
+
 	get("/todo") { _:Request => repo.getAllItemInTodo() }
 	get("/doing") { _:Request => repo.getAllItemInDoing() }
 	get("/done") { _:Request => repo.getAllItemInDone() }

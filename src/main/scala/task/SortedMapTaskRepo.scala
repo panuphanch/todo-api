@@ -55,6 +55,18 @@ class SortedMapTaskRepo {
 		result
 	}
 
+	def revertToTodo(doing: Doing): Option[Todo] = {
+		val item = doingList.get(doing.id)
+		val result = item match {
+			case Some(value) => 
+				doingList.remove(value.id)
+				todoList.addOne(value.id -> Todo(value.id, value.title))
+				Some(todoList.last._2)
+			case None => None
+		}
+		result
+	}
+
 	def getAllItemInTodo(): List[Todo] = todoList.values.toList
 	def getAllItemInDoing(): List[Doing] = doingList.values.toList
 	def getAllItemInDone(): List[Done] = doneList.values.toList
